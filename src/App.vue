@@ -53,7 +53,7 @@
 		}
 
 		itemChange(e: MouseEvent, item: any): void {
-			const checked = (e.target as HTMLElement).checked
+			const checked = (e.target as HTMLInputElement).checked
 			checked ? this.checkedSet.add(item.id) : this.checkedSet.delete(item.id)
 			item.checked = checked
 			this.setSize = this.checkedSet.size
@@ -66,7 +66,7 @@
 		}
 
 		allChange(e: MouseEvent): void {
-			const checked = (e.target as HTMLElement).checked
+			const checked = (e.target as HTMLInputElement).checked
 			this.checkedAll = checked
 			this.items.forEach(item => this.itemChange(e, item))
 		}

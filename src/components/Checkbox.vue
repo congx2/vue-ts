@@ -50,10 +50,6 @@
 <script lang="ts">
 	import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
 
-	interface StyleObject {
-		[attr: string]: number | string
-	}
-
 	type ModeType = 'fill' | 'stroke'
 
 	@Component({
@@ -109,15 +105,15 @@
 		}
 
 		get borderRadius(): string {
-			const reg = /([a-z]+)$/
-			const match: string[] = reg.exec(this.boxSize)
-			const unit = match ? match[1] : 'px'
-			const defaultRatio = 1 / 4
-			const ratio = unit === '%' ? parseFloat(this.radius) / 100 : defaultRatio
-			return this.getAutoValue(this.radius, 4, ratio)
+			// const reg = /([a-z]+)$/
+			// const match: string[] | null = reg.exec(this.boxSize)
+			// const unit = match ? match[1] : 'px'
+			// const defaultRatio = 1 / 4
+			// const ratio = unit === '%' ? parseFloat(this.radius) / 100 : defaultRatio
+			return this.getAutoValue(this.radius, 4, 1 / 4)
 		}
 
-		get css(): StyleObject {
+		get css() {
 			const { disable, color, disableColor } = this
 			const size = this.getValueWithUnit(this.size, 16)
 			const css = {
@@ -129,7 +125,7 @@
 				borderColor: disable ? disableColor : color
 			}
 			if (this.isFill && (this.checkedStatus || this.indeterminateStatus)) {
-				css.backgroundColor = disable ? disableColor : color
+				;(css as any).backgroundColor = disable ? disableColor : color
 			}
 			return css
 		}
@@ -146,14 +142,14 @@
 				return (Number.isNaN(val) ? defaultValue : val) + 'px'
 			}
 			const valWithUnitReg = /^\d+(?:\.\d+)?([a-z]+)$/i
-			const match = valWithUnitReg.exec(val)
+			const match: string[] | null = valWithUnitReg.exec(val)
 			val = parseFloat(val)
 			val = Number.isNaN(val) ? defaultValue : val
 			return val + (match ? match[1] : 'px')
 		}
 
 		getAutoValue(val: number | string, defaultValue: number, ratio: number): string {
-			if (typeof value === 'string' && /^\d+(?:\.\d+)?%$/.test(val)) {
+			if (typeof val === 'string' && /^\d+(?:\.\d+)?%$/.test(val)) {
 				const p = parseFloat(val)
 				if (Number.isNaN(p)) {
 					return '0'
@@ -164,7 +160,7 @@
 				return this.getValueWithUnit(val, defaultValue)
 			}
 			const reg = /([a-z]+)$/
-			const match: string[] = reg.exec(this.boxSize)
+			const match: string[] | null = reg.exec(this.boxSize)
 			const unit = match ? match[1] : 'px'
 			const size = parseFloat(this.boxSize)
 			const value = ratio * size
